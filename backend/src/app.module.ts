@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';   // 👈 Importamos el AuthModule
 
 @Module({
   imports: [
@@ -34,8 +35,9 @@ import { UserModule } from './user/user.module';
       },
     }),
     UserModule,
+    AuthModule,  // 👈 Aquí agregamos el módulo de autenticación
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
