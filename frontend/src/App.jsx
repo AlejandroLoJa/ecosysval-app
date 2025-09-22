@@ -1,5 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+
 
 // Navbar en components
 import Navbar from "./components/Navbar";
@@ -9,28 +10,47 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Subscribe from "./pages/Subscribe";
 import Profile from "./pages/Profile";
+import Perfil from "./pages/Perfil";
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+
+  // Obtenemos usuario desde localStorage
+  const storedUser = localStorage.getItem("user");
+  const isLoggedIn = !!storedUser; // true si existe usuario
+
+  // Rutas donde queremos mostrar el Navbar
+  const showNavbar =
+    !isLoggedIn &&
+    (location.pathname === "/login" ||
+      location.pathname === "/register" ||
+      location.pathname === "/subscribe");
+
   return (
-    <Router>
-      {/* Menú de navegación */}
-      <Navbar />
+    <>
+      {/* Solo mostramos Navbar si el usuario NO está logueado */}
+      {showNavbar && <Navbar />}
 
-      {/* Contenido de cada página */}
+      {/* Contenido de las páginas */}
       <div style={{ padding: "20px" }}>
         <Routes>
-          {/* Redirección inicial a Login */}
           <Route path="/" element={<Login />} />
-
-          {/* Rutas principales */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/subscribe" element={<Subscribe />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/perfil" element={<Perfil />} />
+
         </Routes>
       </div>
-    </Router>
+    </>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}

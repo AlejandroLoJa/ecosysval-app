@@ -1,68 +1,170 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  Patch,
+  UploadedFile,
+  UseInterceptors,
+  BadRequestException,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from './user.entity';
-import * as bcrypt from 'bcrypt';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { existsSync, mkdirSync } from 'fs';
+import { extname, join } from 'path';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // 🔹 Crear usuario (registro)
+  // =========================
+  // Helpers para uploads
+  // =========================
+  private ensureDir(dir: string) {
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  }
+
+  private imageFileFilter = (_req: any, file: Express.Multer.File, cb: any) => {
+    if (!file.mimetype.match(/^image\/(png|jpe?g|gif|webp|svg\+xml)$/)) {
+      return cb(
+        new BadRequestException('Solo se permiten archivos de imagen'),
+        false,
+      );
+    }
+    cb(null, true);
+  };
+
+  // =========================
+  // Crear usuario (registro)
+  // =========================
   @Post()
-  async create(@Body() user: Partial<User>) {
-    if (!user.password) {
+  async create(@Body() user: any) {
+    if (!user?.password) {
       return { success: false, message: 'La contraseña es obligatoria' };
     }
-
-    // encriptar contraseña antes de guardar
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    user.password = hashedPassword;
-
     const newUser = await this.userService.create(user);
     return { success: true, message: 'Usuario registrado', user: newUser };
   }
 
-  // 🔹 Obtener todos los usuarios
+  // =========================
+  // Obtener todos los usuarios
+  // =========================
   @Get()
   async findAll() {
     return this.userService.findAll();
   }
 
-  // 🔹 Obtener un usuario por ID
+  // =========================
+  // Obtener un usuario por ID
+  // =========================
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.userService.findOne(Number(id));
   }
 
-  // 🔹 Actualizar usuario
+  // =========================
+  // Actualizar usuario (datos)
+  // =========================
   @Put(':id')
-  async update(@Param('id') id: string, @Body() user: Partial<User>) {
-    if (user.password) {
-      user.password = await bcrypt.hash(user.password, 10);
-    }
+  async update(@Param('id') id: string, @Body() user: any) {
     return this.userService.update(Number(id), user);
   }
 
-  // 🔹 Eliminar usuario
+  // =========================
+  // Subir imagen de perfil
+  // =========================
+  @Patch(':id/profile-image')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (_req, _file, cb) => {
+          const uploadPath = join(process.cwd(), 'uploads', 'profile_images');
+          if (!existsSync(uploadPath)) mkdirSync(uploadPath, { recursive: true });
+          cb(null, uploadPath);
+        },
+        filename: (_req, file, cb) => {
+          const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, `profile_${unique}${extname(file.originalname)}`);
+        },
+      }),
+      fileFilter: (_req, file, cb) => {
+        if (!file.mimetype.match(/^image\/(png|jpe?g|gif|webp|svg\+xml)$/)) {
+          return cb(
+            new BadRequestException('Solo se permiten archivos de imagen'),
+            false,
+          );
+        }
+        cb(null, true);
+      },
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+    }),
+  )
+  async uploadProfileImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) throw new BadRequestException('No se recibió ningún archivo');
+
+    const relativePath = `/uploads/profile_images/${file.filename}`;
+    const user = await this.userService.updateImages(Number(id), {
+      profile_image: relativePath,
+    });
+
+    return { success: true, message: 'Imagen de perfil actualizada', user };
+  }
+
+  // =========================
+  // Subir imagen de banner
+  // =========================
+  @Patch(':id/banner-image')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (_req, _file, cb) => {
+          const uploadPath = join(process.cwd(), 'uploads', 'banner_images');
+          if (!existsSync(uploadPath)) mkdirSync(uploadPath, { recursive: true });
+          cb(null, uploadPath);
+        },
+        filename: (_req, file, cb) => {
+          const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, `banner_${unique}${extname(file.originalname)}`);
+        },
+      }),
+      fileFilter: (_req, file, cb) => {
+        if (!file.mimetype.match(/^image\/(png|jpe?g|gif|webp|svg\+xml)$/)) {
+          return cb(
+            new BadRequestException('Solo se permiten archivos de imagen'),
+            false,
+          );
+        }
+        cb(null, true);
+      },
+      limits: { fileSize: 5 * 1024 * 1024 },
+    }),
+  )
+  async uploadBannerImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) throw new BadRequestException('No se recibió ningún archivo');
+
+    const relativePath = `/uploads/banner_images/${file.filename}`;
+    const user = await this.userService.updateImages(Number(id), {
+      banner_image: relativePath,
+    });
+
+    return { success: true, message: 'Imagen de portada actualizada', user };
+  }
+
+  // =========================
+  // Eliminar usuario
+  // =========================
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.userService.remove(Number(id));
-  }
-
-  // 🔹 Login
-  @Post('login')
-  async login(@Body() body: { email: string; password: string }) {
-    const user = await this.userService.findByEmail(body.email);
-
-    if (!user) {
-      return { success: false, message: 'Usuario no encontrado' };
-    }
-
-    const isPasswordValid = await bcrypt.compare(body.password, user.password);
-    if (!isPasswordValid) {
-      return { success: false, message: 'Contraseña incorrecta' };
-    }
-
-    return { success: true, message: 'Login exitoso', user };
   }
 }

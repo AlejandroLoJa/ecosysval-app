@@ -1,5 +1,4 @@
-// user.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -13,5 +12,13 @@ export class User {
   email: string;
 
   @Column()
-  password: string; // <-- nuevo campo
+  password: string;
+
+  // 🔹 Nueva columna para imagen de perfil
+  @Column({ type: 'text', nullable: true })
+  profile_image: string;
+
+  // 🔹 Nueva columna para banner
+  @Column({ type: 'text', nullable: true })
+  banner_image: string;
 }

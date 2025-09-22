@@ -1,7 +1,149 @@
-.App {
-  text-align: center;
+/* ================================
+   Fondo general de la aplicación
+   ================================ */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-image: url('/fondo.png'); /* Tu imagen de fondo */
+  background-size: cover;              /* Mantiene la proporción */
+  background-position: center;         /* Centrado */
+  background-attachment: fixed;        /* Se queda fijo al hacer scroll */
+  background-repeat: no-repeat;        /* Evita repetirse */
+  min-height: 100vh;
 }
 
+/* ================================
+   Contenedor principal de la app
+   ================================ */
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================================
+   Navbar flotante y moderno
+   ================================ */
+.navbar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.navbar {
+  display: flex;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.2); /* Transparencia elegante */
+  backdrop-filter: blur(10px);          /* Efecto vidrio borroso */
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a {
+  text-decoration: none;
+  font-weight: 600;
+  color: #222;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+
+.navbar a:hover {
+  background: #2563eb; /* Azul moderno */
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ================================
+   Formulario de Login/Register
+   ================================ */
+.form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.form-box {
+  background: rgba(255, 255, 255, 0.8); /* Fondo blanco semitransparente */
+  backdrop-filter: blur(12px);          /* Vidrio borroso */
+  border-radius: 1.5rem;                /* Bordes redondeados */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-box h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+.form-box input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  transition: 0.2s ease;
+}
+
+.form-box input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.4);
+}
+
+.form-box button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.form-box button:hover {
+  background: #1d4ed8;
+}
+
+/* ================================
+   Animación opcional para entradas
+   ================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-box {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* ================================
+   Animación de logo original
+   ================================ */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -11,21 +153,6 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 @keyframes App-logo-spin {

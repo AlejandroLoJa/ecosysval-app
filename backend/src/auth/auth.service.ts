@@ -1,21 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+// src/auth/auth.service.ts
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
-import { User } from '../user/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    private readonly userService: UserService, // 👈 Inyectamos el servicio
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<Omit<User, 'password'> | null> {
-    const user = await this.userService.findByEmail(email);
-
+  async validateUser(email: string, pass: string) {
+    const user = await this.userService.findByEmail(email); // Método en UserService
     if (user && (await bcrypt.compare(pass, user.password))) {
-      // quitamos el password antes de devolver el user
       const { password, ...result } = user;
       return result;
     }
@@ -30,3 +28,4 @@ export class AuthService {
     };
   }
 }
+
