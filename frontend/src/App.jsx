@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import Subscribe from "./pages/Subscribe";
 import Profile from "./pages/Profile";
 import Perfil from "./pages/Perfil";
+import MapaPage from "./pages/MapaPage";
 
 function AppContent() {
   const location = useLocation();
@@ -40,6 +41,7 @@ function AppContent() {
           <Route path="/subscribe" element={<Subscribe />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/mapa" element={<MapaPage />} />
 
         </Routes>
       </div>
