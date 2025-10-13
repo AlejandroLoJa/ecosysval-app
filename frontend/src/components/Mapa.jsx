@@ -4,29 +4,24 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 // =============================
-// 1️⃣ Configuración para arreglar icono roto de Leaflet
+// 1️⃣ Corrige el bug del ícono roto
 // =============================
 delete L.Icon.Default.prototype._getIconUrl;
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-  iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-});
-
 // =============================
-// 2️⃣ Opcional: Ícono personalizado
+// 2️⃣ Configura un solo ícono personalizado
 // =============================
-// Guarda tu imagen en public/ como "custom-marker.png"
+// 👉 Coloca tu imagen en: public/icons/marker.png
 const customIcon = L.icon({
-  iconUrl: "/custom-marker.png", // Ruta desde public
-  iconSize: [32, 32],            // Tamaño de la imagen
-  iconAnchor: [16, 32],          // Punto que "apunta" a la ubicación
-  popupAnchor: [0, -32],         // Posición del popup respecto al ícono
+  iconUrl: "/icons/marker.png",   // Ruta desde carpeta public
+  shadowUrl: "leaflet/dist/images/marker-shadow.png",
+  iconSize: [36, 48],             // ancho / alto del ícono
+  iconAnchor: [18, 48],           // punta inferior del marcador
+  popupAnchor: [0, -45],          // posición del popup respecto al ícono
 });
 
 export default function Mapa() {
-  const position = [19.432608, -99.133209]; // Ciudad de México
+  const position = [19.432608, -99.133209]; // 📍 Ciudad de México
 
   useEffect(() => {
     console.log("Mapa cargado correctamente ✅");
@@ -37,23 +32,26 @@ export default function Mapa() {
       <MapContainer
         center={position}
         zoom={13}
-        style={{ height: "100%", width: "100%", borderRadius: "10px" }}
+        style={{
+          height: "100%",
+          width: "100%",
+          borderRadius: "10px",
+          boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+        }}
       >
-        {/* ============================
-            Fondo del mapa
-        ============================ */}
+        {/* Fondo del mapa */}
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
+  url="https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png"
+  attribution='© OpenStreetMap contributors, CC-BY-SA'
+/>
 
-        {/* ============================
-            Marcador
-            - Por defecto se ve corregido
-            - Si quieres usar customIcon, descomenta la línea "icon={customIcon}"
-        ============================ */}
-        <Marker position={position} /* icon={customIcon} */>
-          <Popup>Ciudad de México</Popup>
+
+
+
+
+        {/* Marcador principal */}
+        <Marker position={position} icon={customIcon}>
+          <Popup>Ciudad de México 🌆</Popup>
         </Marker>
       </MapContainer>
     </div>

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Post } from '../post/post.entity';
 
 @Entity()
 export class User {
@@ -14,11 +15,12 @@ export class User {
   @Column()
   password: string;
 
-  // 🔹 Nueva columna para imagen de perfil
   @Column({ type: 'text', nullable: true })
   profile_image: string;
 
-  // 🔹 Nueva columna para banner
   @Column({ type: 'text', nullable: true })
   banner_image: string;
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }

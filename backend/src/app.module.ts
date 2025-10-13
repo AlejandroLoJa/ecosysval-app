@@ -4,11 +4,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';   // 👈 Importamos el AuthModule
+import { AuthModule } from './auth/auth.module';
+import { PostModule } from './post/post.module';
+import { User } from './user/user.entity';  
+import { Post } from './post/post.entity';  
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
@@ -19,6 +23,7 @@ import { AuthModule } from './auth/auth.module';   // 👈 Importamos el AuthMod
             dropSchema: true,
             autoLoadEntities: true,
             synchronize: true,
+            entities: [User, Post], 
           };
         }
 
@@ -31,11 +36,14 @@ import { AuthModule } from './auth/auth.module';   // 👈 Importamos el AuthMod
           database: config.get<string>('DB_NAME'),
           autoLoadEntities: true,
           synchronize: true,
+          entities: [User, Post],
         };
       },
     }),
+
     UserModule,
-    AuthModule,  // 👈 Aquí agregamos el módulo de autenticación
+    AuthModule,
+    PostModule, // 👈 ya estaba bien
   ],
   controllers: [AppController],
   providers: [AppService],
