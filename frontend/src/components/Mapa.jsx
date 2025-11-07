@@ -4,54 +4,54 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 // =============================
-// 1️⃣ Corrige el bug del ícono roto
+// 🧭 Ícono personalizado para el marcador
 // =============================
-delete L.Icon.Default.prototype._getIconUrl;
-
-// =============================
-// 2️⃣ Configura un solo ícono personalizado
-// =============================
-// 👉 Coloca tu imagen en: public/icons/marker.png
 const customIcon = L.icon({
-  iconUrl: "/icons/marker.png",   // Ruta desde carpeta public
-  shadowUrl: "leaflet/dist/images/marker-shadow.png",
-  iconSize: [36, 48],             // ancho / alto del ícono
-  iconAnchor: [18, 48],           // punta inferior del marcador
-  popupAnchor: [0, -45],          // posición del popup respecto al ícono
+  iconUrl: "/custom-marker.png", // Ruta desde public/
+  iconSize: [40, 40], // Tamaño del ícono
+  iconAnchor: [20, 40], // Punto que “toca” el mapa
+  popupAnchor: [0, -35], // Ajuste del popup
+  className: "shadow-md", // Opcional para añadir sombra CSS
 });
 
+// =============================
+// 🗺️ Componente principal
+// =============================
 export default function Mapa() {
-  const position = [19.432608, -99.133209]; // 📍 Ciudad de México
+  const position = [19.432608, -99.133209]; // Ciudad de México
 
   useEffect(() => {
-    console.log("Mapa cargado correctamente ✅");
+    console.log("🌍 Mapa de OMEC cargado correctamente ✅");
   }, []);
 
   return (
-    <div className="w-full h-full" style={{ height: "500px", width: "100%" }}>
+    <div
+      className="w-full h-full rounded-xl shadow-lg border border-gray-200"
+      style={{ height: "500px", width: "100%" }}
+    >
       <MapContainer
         center={position}
         zoom={13}
-        style={{
-          height: "100%",
-          width: "100%",
-          borderRadius: "10px",
-          boxShadow: "0 0 10px rgba(0,0,0,0.2)",
-        }}
+        style={{ height: "100%", width: "100%", borderRadius: "12px" }}
       >
-        {/* Fondo del mapa */}
+        {/* ============================
+            🎨 Fondo del mapa (Mapbox estilo tipo Google Maps)
+        ============================ */}
         <TileLayer
-  url="https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png"
-  attribution='© OpenStreetMap contributors, CC-BY-SA'
-/>
+          url="https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWxlOTUxMDE5IiwiYSI6ImNtaGo4dGc4NjE4anQybG9nbXU2cXlndnUifQ.gUgMSw6o2RVGjq8eBhgTpA"
+          attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a> | Datos © <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+          tileSize={512}
+          zoomOffset={-1}
+        />
 
-
-
-
-
-        {/* Marcador principal */}
+        {/* ============================
+            📍 Marcador de ejemplo
+        ============================ */}
         <Marker position={position} icon={customIcon}>
-          <Popup>Ciudad de México 🌆</Popup>
+          <Popup>
+            <b>OMEC - Ciudad de México</b> <br />
+            Aquí se encuentra una de nuestras sedes 🌎
+          </Popup>
         </Marker>
       </MapContainer>
     </div>

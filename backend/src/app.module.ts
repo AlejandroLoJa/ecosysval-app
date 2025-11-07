@@ -7,7 +7,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
 import { User } from './user/user.entity';  
-import { Post } from './post/post.entity';  
+import { Post } from './post/post.entity'; 
+import { EmpresaModule } from './empresa/empresa.module'; 
 
 @Module({
   imports: [
@@ -43,7 +44,8 @@ import { Post } from './post/post.entity';
 
     UserModule,
     AuthModule,
-    PostModule, // 👈 ya estaba bien
+    PostModule,
+    EmpresaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
