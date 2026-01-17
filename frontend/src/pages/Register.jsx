@@ -8,7 +8,6 @@ function Register() {
   const [message, setMessage] = useState("");
 
   const validateEmail = (email) => {
-    // Expresión regular básica para emails
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
@@ -51,36 +50,54 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-center flex flex-col" style={{ backgroundImage: "url('/fondo.png')" }}>
-      <header className="p-6">
-        <h1 className="text-xl font-bold text-gray-800">ECOSYSVAL</h1>
+    <div
+      className="min-h-screen bg-cover bg-center relative"
+      style={{ backgroundImage: "url('/fondo.png')" }}
+    >
+      {/* OVERLAY OSCURO REAL */}
+      <div className="absolute inset-0 bg-black/50 z-0" />
+
+      {/* HEADER */}
+      <header className="relative z-10 flex items-center p-6">
+        <img
+          src="/ecosysval.png"
+          alt="ECOSYSVAL"
+          className="h-10 w-auto object-contain"
+        />
       </header>
 
-      <div className="flex flex-1 items-center justify-center">
-        <div className="w-full max-w-md rounded-lg shadow-lg p-8" style={{ backgroundColor: "transparent" }}>
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Crear cuenta</h2>
+      {/* CONTENIDO */}
+      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
+        <div className="w-full max-w-md rounded-2xl bg-black/30 backdrop-blur-sm border border-white/20 shadow-2xl p-8">
+          <h2 className="text-3xl font-bold text-center text-white mb-6">
+            Crear cuenta
+          </h2>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Nombre */}
+            {/* Nombre completo */}
             <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">Nombre completo</label>
+              <label className="block text-sm font-medium text-white mb-1">
+                Nombre completo
+              </label>
               <input
                 type="text"
                 placeholder="Escriba su nombre"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg bg-white text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-yellow-400 outline-none"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
 
-            {/* Correo */}
+            {/* Correo electrónico */}
             <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">Correo electrónico</label>
+              <label className="block text-sm font-medium text-white mb-1">
+                Correo electrónico
+              </label>
               <input
                 type="email"
                 placeholder="correo@empresa.com"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg bg-white text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-yellow-400 outline-none"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -89,11 +106,13 @@ function Register() {
 
             {/* Contraseña con ojito */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-800 mb-1">Contraseña</label>
+              <label className="block text-sm font-medium text-white mb-1">
+                Contraseña
+              </label>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="********"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg bg-white text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-yellow-400 outline-none pr-10"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -101,26 +120,35 @@ function Register() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2 top-2 text-gray-600"
+                className="absolute right-3 top-9 text-slate-700"
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
 
-            {/* Botón */}
+            {/* Botón de registro */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+              className="w-full bg-yellow-400 text-slate-900 py-2 rounded-lg font-semibold hover:brightness-95 transition"
             >
               Registrarse
             </button>
           </form>
 
-          {message && <p className="text-center text-sm text-red-600 mt-4">{message}</p>}
+          {message && (
+            <p className="text-center text-sm text-red-300 mt-4">
+              {message}
+            </p>
+          )}
 
-          <p className="text-center text-sm text-gray-800 mt-6">
+          <p className="text-center text-sm text-white mt-6">
             ¿Ya tienes cuenta?{" "}
-            <a href="/login" className="text-blue-800 hover:underline">Inicia sesión</a>
+            <a 
+              href="/login" 
+              className="text-yellow-300 hover:underline"
+            >
+              Inicia sesión
+            </a>
           </p>
         </div>
       </div>

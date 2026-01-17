@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // 👈 Para mostrar/ocultar contraseña
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
 
     try {
       const res = await fetch("http://localhost:3000/auth/login", {
@@ -19,64 +20,66 @@ function Login() {
       });
 
       const data = await res.json();
-      console.log("Respuesta del backend:", data); // 👈 Depuración
 
       if (res.ok) {
-        // Guardar token y datos de usuario en localStorage
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/profile"); // Redirigir al perfil
+        navigate("/profile");
       } else {
-        alert(data.message || "Credenciales incorrectas");
+        setMessage(data.message || "Credenciales incorrectas");
       }
     } catch (error) {
-      console.error("Error al conectar con el servidor:", error);
-      alert("Error al iniciar sesión");
+      setMessage("Error al iniciar sesión");
     }
   };
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex flex-col"
+      className="min-h-screen bg-cover bg-center relative"
       style={{ backgroundImage: "url('/fondo.png')" }}
     >
-      {/* Header */}
-      <header className="p-6">
-        <h1 className="text-xl font-bold text-gray-800">ECOSYSVAL</h1>
+      {/* OVERLAY OSCURO REAL */}
+      <div className="absolute inset-0 bg-black/50 z-0" />
+
+      {/* HEADER */}
+      <header className="relative z-10 flex items-center p-6">
+        <img
+          src="/ecosysval.png"
+          alt="ECOSYSVAL"
+          className="h-10 w-auto object-contain"
+        />
       </header>
 
-      {/* Contenedor principal */}
-      <div className="flex flex-1 items-center justify-center">
-        <div className="w-full max-w-md rounded-lg shadow-lg p-8" style={{ backgroundColor: "transparent" }}>
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+      {/* CONTENIDO */}
+      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
+        <div className="w-full max-w-md rounded-2xl bg-black/30 backdrop-blur-sm border border-white/20 shadow-2xl p-8">
+          <h2 className="text-3xl font-bold text-center text-white mb-6">
             Inicio de sesión
           </h2>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Campo de correo electrónico */}
             <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Correo electrónico
               </label>
               <input
                 type="email"
                 placeholder="correo@empresa.com"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg bg-white text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-yellow-400 outline-none"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
 
-            {/* Campo de contraseña con botón de mostrar/ocultar */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-800 mb-1">
+              <label className="block text-sm font-medium text-white mb-1">
                 Contraseña
               </label>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="********"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none pr-10"
+                className="w-full px-4 py-2 rounded-lg bg-white text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-yellow-400 outline-none pr-10"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -84,31 +87,29 @@ function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-9 text-gray-600 hover:text-gray-800"
-                aria-label="Mostrar u ocultar contraseña"
+                className="absolute right-3 top-9 text-slate-700"
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
 
-            {/* Botón de inicio de sesión */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition shadow-md"
+              className="w-full bg-yellow-400 text-slate-900 py-2 rounded-lg font-semibold hover:brightness-95 transition"
             >
               Iniciar sesión
             </button>
           </form>
 
-          {/* Mensaje de error */}
           {message && (
-            <p className="text-center text-sm text-red-600 mt-4">{message}</p>
+            <p className="text-center text-sm text-red-300 mt-4">
+              {message}
+            </p>
           )}
 
-          {/* Link para registro */}
-          <p className="text-center text-sm text-gray-800 mt-6">
+          <p className="text-center text-sm text-white mt-6">
             ¿No tienes una cuenta?{" "}
-            <a href="/register" className="text-blue-800 hover:underline">
+            <a href="/register" className="text-yellow-300 hover:underline">
               Crear una cuenta
             </a>
           </p>

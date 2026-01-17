@@ -2,44 +2,133 @@ import React from "react";
 
 function Subscribe() {
   const plans = [
-    { name: "Básico", bgImage: "/Basico.png" },
-    { name: "Pro", bgImage: "/Pro.png" },
-    { name: "Premium", bgImage: "/Premium.png" },
-    { name: "Platino", bgImage: "/Platino.png" },
+    { 
+      name: "Básico", 
+      bgImage: "/Basico.png",
+      features: [
+        "Perfil empresarial personalizado",
+        "Incorporación al Ecosistema",
+        "Posicionamiento estratégico en el mercado"
+      ]
+    },
+    { 
+      name: "Pro", 
+      bgImage: "/Pro.png",
+      features: [
+        "Perfil empresarial descargable",
+        "Identificación de socios comerciales",
+        "Integración de datos de valor"
+      ]
+    },
+    { 
+      name: "Premium", 
+      bgImage: "/Premium.png",
+      features: [
+        "Propuestas comerciales con especificaciones técnicas",
+        "Transacciones de compra-venta"
+      ]
+    },
+    { 
+      name: "Platino", 
+      bgImage: "/Platino.png",
+      features: [
+        "Sistema de crecimiento",
+        "Recompensas",
+        "Networking",
+        "Financiamientos",
+        "Desarrollar la plataforma"
+      ]
+    },
   ];
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex flex-col"
+      className="min-h-screen bg-cover bg-center relative"
       style={{ backgroundImage: "url('/fondo.png')" }}
     >
-      <header className="p-6">
-        <h1 className="text-xl font-bold text-gray-800 drop-shadow-lg">ECOSYSVAL</h1>
+      {/* OVERLAY OSCURO MÁS CLARO */}
+      <div className="absolute inset-0 bg-black/50 z-0" />
+
+      {/* HEADER */}
+      <header className="relative z-10 flex items-center p-6">
+        <img
+          src="/ecosysval.png"
+          alt="ECOSYSVAL"
+          className="h-10 w-auto object-contain"
+        />
       </header>
 
-      <div className="flex flex-1 items-center justify-center">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6 max-w-6xl w-full">
-          {plans.map((plan) => (
-            <div key={plan.name} className="flex flex-col items-center">
-              {/* Tarjeta con imagen y efecto hover */}
-              <div
-                className="relative rounded-lg overflow-hidden w-full min-h-[350px] cursor-pointer transform transition duration-300 hover:scale-105 hover:shadow-2xl"
-                style={{
-                  backgroundImage: `url(${plan.bgImage})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                {/* Overlay de color al pasar el mouse */}
-                <div className="absolute inset-0 bg-blue-500 opacity-0 hover:opacity-25 transition"></div>
-              </div>
+      {/* CONTENIDO */}
+      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] px-4 py-10">
+        <div className="w-full max-w-6xl">
+          {/* Título principal */}
+          <div className="text-center mb-12">
+            
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Elige tu Plan
+            </h2>
+            <p className="text-lg text-white/80 max-w-2xl mx-auto">
+              Selecciona el plan que mejor se adapte a las necesidades de tu empresa
+            </p>
+          </div>
 
-              {/* Botón debajo de la tarjeta */}
-              <button className="mt-3 w-full max-w-xs bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition shadow-md">
-                Suscribirse
-              </button>
-            </div>
-          ))}
+          {/* Grid de tarjetas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {plans.map((plan) => (
+              <div 
+                key={plan.name} 
+                className="flex flex-col rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:translate-y-[-5px]"
+              >
+                {/* Imagen REALZADA */}
+                <div
+                  className="relative h-56 w-full overflow-hidden bg-white"
+                >
+                  <img
+                    src={plan.bgImage}
+                    alt={plan.name}
+                    className="w-full h-full object-contain p-4 brightness-100 contrast-125"
+                    style={{ filter: 'brightness(1.1) contrast(1.1) saturate(1.05)' }}
+                  />
+                </div>
+
+                {/* Contenido */}
+                <div className="p-6 flex flex-col flex-grow">
+                  {/* Nombre del plan DEBAJO de la imagen */}
+                  <h3 className="text-2xl font-bold text-white text-center mb-4">
+                    {plan.name.toUpperCase()}
+                  </h3>
+
+                  {/* Lista de características */}
+                  <ul className="space-y-3 mb-6 flex-grow">
+                    {plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="text-yellow-300 mr-2">•</span>
+                        <span className="text-white/90 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Botón */}
+                  <button className="w-full bg-yellow-400 text-slate-900 py-3 rounded-lg hover:bg-yellow-300 hover:shadow-lg transition-all duration-300 font-semibold text-lg">
+                    Suscribirse
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Información adicional */}
+          <div className="mt-16 text-center pt-8 border-t border-white/20">
+            <p className="text-white/80">
+              ¿Necesitas ayuda para elegir?{" "}
+              <a 
+                href="/contacto" 
+                className="text-yellow-300 hover:text-yellow-400 hover:underline font-medium"
+              >
+                Contáctanos
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>

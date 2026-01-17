@@ -10,9 +10,18 @@ import {
   FileDown,
 } from "lucide-react";
 import SidebarMenu from "../components/SidebarMenu";
+import MainHeader from "../components/MainHeader";
 
 const API_URL = "http://localhost:3000";
 const EMPRESA_ID_DEFAULT = 1;
+
+// Catálogo inicial de actividades SCIAN (puedes ampliarlo luego)
+const OPCIONES_SCIAN = [
+  { codigo: "522320", descripcion: "Otros servicios de intermediación crediticia" },
+  { codigo: "541511", descripcion: "Servicios de desarrollo de software a la medida" },
+  { codigo: "541512", descripcion: "Servicios de consultoría en tecnologías de información" },
+  { codigo: "611430", descripcion: "Escuelas de capacitación para el trabajo" },
+];
 
 export default function Perfil() {
   const [empresa, setEmpresa] = useState(null);
@@ -43,6 +52,9 @@ export default function Perfil() {
     productos: "",
     servicios: "",
     objetivos: "",
+    // NUEVO
+    scianCodigo: "",
+    scianDescripcion: "",
   });
 
   // manejo del logo
@@ -85,6 +97,8 @@ export default function Perfil() {
           productos: data.productos ?? "",
           servicios: data.servicios ?? "",
           objetivos: data.objetivos ?? "",
+          scianCodigo: data.scianCodigo ?? "",
+          scianDescripcion: data.scianDescripcion ?? "",
         });
       } else if (res.status === 404) {
         // No existe: modo creación
@@ -200,6 +214,8 @@ export default function Perfil() {
         productos: empresa.productos ?? "",
         servicios: empresa.servicios ?? "",
         objetivos: empresa.objetivos ?? "",
+        scianCodigo: empresa.scianCodigo ?? "",
+        scianDescripcion: empresa.scianDescripcion ?? "",
       });
     }
     setLogoFile(null);
@@ -207,7 +223,7 @@ export default function Perfil() {
     setEditMode(false);
   }
 
-  // ===== Descargar PDF (sin tocar lo demás) =====
+  // ===== Descargar PDF =====
   async function descargarPDF() {
     if (!empresa?.id) return;
     setDownloading(true);
@@ -220,7 +236,10 @@ export default function Perfil() {
       if (data?.url) {
         const link = document.createElement("a");
         link.href = `${API_URL}${data.url}`;
-        link.download = `perfil_${(empresa.razonSocial || "empresa").replace(/\s+/g, "_")}.pdf`;
+        link.download = `perfil_${(empresa.razonSocial || "empresa").replace(
+          /\s+/g,
+          "_"
+        )}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -246,25 +265,14 @@ export default function Perfil() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* ======= BARRA SUPERIOR ======= */}
-      <header className="bg-blue-900 text-white flex items-center justify-between px-6 py-3 shadow-md fixed top-0 left-0 right-0 z-50">
-        <div className="font-bold text-xl">OMEC</div>
-        <input
-          type="text"
-          placeholder="Buscar..."
-          className="w-1/2 px-4 py-2 rounded-full text-black focus:outline-none"
-        />
-        <div className="flex items-center gap-4">
-          <span className="font-semibold">Alejandro Lopez</span>
-          <img
-            src="/avatar.png"
-            alt="Usuario"
-            className="w-8 h-8 rounded-full border"
-          />
-        </div>
-      </header>
+      {/* HEADER GLOBAL REUTILIZABLE */}
+      <MainHeader
+        showSearch={true}     // muestra el buscador
+        showBack={false}      // sin botón de "volver" aquí
+        title="ECOSYSVAL"     // texto de la izquierda
+      />
 
-      <div className="flex flex-1 pt-14">
+      <div className="flex flex-1">
         {/* ======= MENÚ LATERAL ======= */}
         <aside className="w-64 h-screen bg-blue-900 text-white shadow-lg overflow-y-auto">
           <SidebarMenu />
@@ -376,10 +384,16 @@ export default function Perfil() {
               <div className="row-span-3 flex flex-col items-center justify-center relative">
                 {logoPreview || form.logo ? (
                   <img
-                    src={logoPreview || form.logo}
+                    src={
+                      logoPreview ||
+                      (form.logo?.startsWith("http")
+                        ? form.logo
+                        : `${API_URL}${form.logo || ""}`)
+                    }
                     alt="Logo Empresa"
                     className="w-32 h-32 object-contain rounded-lg border shadow bg-white"
                   />
+
                 ) : (
                   <div className="w-32 h-32 flex items-center justify-center bg-gray-100 rounded-lg border">
                     <Building2 className="w-12 h-12 text-gray-500" />
@@ -399,6 +413,7 @@ export default function Perfil() {
                 )}
               </div>
 
+              {/* ÁMBITO */}
               <Field
                 label="Ámbito"
                 edit={editMode}
@@ -406,6 +421,8 @@ export default function Perfil() {
                 onChange={(v) => onChange("ambito", v)}
                 placeholder="Sector o industria"
               />
+
+              {/* UBICACIÓN */}
               <Field
                 label="Ubicación"
                 edit={editMode}
@@ -413,6 +430,8 @@ export default function Perfil() {
                 onChange={(v) => onChange("ubicacion", v)}
                 placeholder="Ciudad, país"
               />
+
+              {/* REPRESENTANTE */}
               <Field
                 label="Representante legal"
                 edit={editMode}
@@ -420,6 +439,8 @@ export default function Perfil() {
                 onChange={(v) => onChange("representante", v)}
                 placeholder="Nombre del representante"
               />
+
+              {/* PÁGINA WEB */}
               <Field
                 label="Página web"
                 edit={editMode}
@@ -427,6 +448,42 @@ export default function Perfil() {
                 onChange={(v) => onChange("paginaWeb", v)}
                 placeholder="https://empresa.com"
               />
+
+              {/* Actividad económica (SCIAN) */}
+              <div className="col-span-3">
+                <p className="text-sm text-gray-500">Actividad económica (SCIAN)</p>
+
+                {editMode ? (
+                  <select
+                    className="mt-1 w-full border border-gray-300 p-3 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    value={form.scianCodigo || ""}
+                    onChange={(e) => {
+                      const codigo = e.target.value;
+                      const opcion = OPCIONES_SCIAN.find(
+                        (o) => o.codigo === codigo
+                      );
+                      setForm((f) => ({
+                        ...f,
+                        scianCodigo: codigo,
+                        scianDescripcion: opcion?.descripcion || "",
+                      }));
+                    }}
+                  >
+                    <option value="">Selecciona una actividad…</option>
+                    {OPCIONES_SCIAN.map((o) => (
+                      <option key={o.codigo} value={o.codigo}>
+                        {o.codigo} — {o.descripcion}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <p className="font-normal break-all">
+                    {form.scianCodigo
+                      ? `${form.scianCodigo} — ${form.scianDescripcion}`
+                      : "—"}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Datos adicionales */}
@@ -613,26 +670,23 @@ function ToggleCard({ label, value, edit, onToggle }) {
   const active = !!value;
   return (
     <div
-      className={`p-4 rounded-lg border ${
-        active
-          ? "bg-green-50 border-green-200 text-green-700"
-          : "bg-red-50 border-red-200 text-red-700"
-      }`}
+      className={`p-4 rounded-lg border ${active
+        ? "bg-green-50 border-green-200 text-green-700"
+        : "bg-red-50 border-red-200 text-red-700"
+        }`}
     >
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold">{label}</p>
         {edit && (
           <button
             onClick={onToggle}
-            className={`w-12 h-6 rounded-full transition ${
-              active ? "bg-green-500" : "bg-gray-300"
-            }`}
+            className={`w-12 h-6 rounded-full transition ${active ? "bg-green-500" : "bg-gray-300"
+              }`}
             title="Cambiar"
           >
             <span
-              className={`block w-5 h-5 bg-white rounded-full transform transition ${
-                active ? "translate-x-6" : "translate-x-1"
-              }`}
+              className={`block w-5 h-5 bg-white rounded-full transform transition ${active ? "translate-x-6" : "translate-x-1"
+                }`}
             />
           </button>
         )}

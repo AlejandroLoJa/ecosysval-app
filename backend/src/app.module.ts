@@ -8,7 +8,9 @@ import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
 import { User } from './user/user.entity';  
 import { Post } from './post/post.entity'; 
-import { EmpresaModule } from './empresa/empresa.module'; 
+import { EmpresaModule } from './empresa/empresa.module';
+import { ContactModule } from './contact/contact.module'; 
+import { EmpleoModule } from "./empleo/empleo.module";
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import { EmpresaModule } from './empresa/empresa.module';
     AuthModule,
     PostModule,
     EmpresaModule,
+    ContactModule,
+    EmpleoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

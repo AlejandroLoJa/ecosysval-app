@@ -3,12 +3,19 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Body,
   Param,
   ParseIntPipe,
   NotFoundException,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+
 import { EmpresaService } from './empresa.service';
 import { EmpresaReportService } from './empresa.report.service';
 
@@ -16,7 +23,7 @@ import { EmpresaReportService } from './empresa.report.service';
 export class EmpresaController {
   constructor(
     private readonly empresaService: EmpresaService,
-    private readonly empresaReportService: EmpresaReportService, // ✅ inyectamos el generador de PDF
+    private readonly empresaReportService: EmpresaReportService, // generador de PDF
   ) {}
 
   @Post()
@@ -44,7 +51,43 @@ export class EmpresaController {
     return this.empresaService.eliminar(id);
   }
 
-  // ✅ NUEVO: Generar y devolver URL del PDF del perfil empresarial
+  // ✅ NUEVO: subir/actualizar logo de la empresa
+  @Patch(':id/logo')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/logos',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, uniqueSuffix + extname(file.originalname));
+        },
+      }),
+    }),
+  )
+  async uploadLogo(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      return {
+        success: false,
+        message: 'No se recibió archivo de logo',
+      };
+    }
+
+    const logoPath = `/uploads/logos/${file.filename}`;
+
+    const empresa = await this.empresaService.actualizar(id, { logo: logoPath });
+
+    return {
+      success: true,
+      logo: logoPath,
+      empresa,
+    };
+  }
+
+  // ✅ Generar y devolver URL del PDF del perfil empresarial
   @Get(':id/reporte')
   async generarReporte(@Param('id', ParseIntPipe) id: number) {
     const empresa = await this.empresaService.obtenerPorId(id);

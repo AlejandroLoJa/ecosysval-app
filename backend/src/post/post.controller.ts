@@ -16,7 +16,7 @@ import { extname } from 'path';
 
 @Controller('posts')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(private readonly postService: PostService) { }
 
   // ✅ Crear publicación con archivos (imagen o video)
   @Post()
@@ -52,6 +52,12 @@ export class PostController {
   async getUserPosts(@Param('userId') userId: number) {
     return this.postService.getUserPosts(userId);
   }
+
+  @Get()
+  async getFeed() {
+    return this.postService.getFeed();
+  }
+
 
   // ✅ Editar publicación
   @Patch(':id')

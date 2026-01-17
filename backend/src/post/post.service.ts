@@ -9,7 +9,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async createPost(
     userId: number,
@@ -50,5 +50,14 @@ export class PostService {
     await this.postRepository.delete(postId);
     return { success: true };
   }
+
+
+  async getFeed(): Promise<Post[]> {
+    return this.postRepository.find({
+      relations: ['user'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
 }
 

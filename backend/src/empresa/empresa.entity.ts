@@ -62,6 +62,13 @@ export class Empresa {
   @Column({ nullable: true })
   objetivos: string;
 
+  // 🔹 NUEVO: campos SCIAN
+  @Column({ nullable: true, length: 10 })
+  scianCodigo: string;
+
+  @Column({ nullable: true, type: 'text' })
+  scianDescripcion: string;
+
   @CreateDateColumn()
   createdAt: Date;
 }

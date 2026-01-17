@@ -1,3 +1,4 @@
+// src/components/Mapa.jsx
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
@@ -17,8 +18,16 @@ const customIcon = L.icon({
 // =============================
 // 🗺️ Componente principal
 // =============================
-export default function Mapa() {
-  const position = [19.432608, -99.133209]; // Ciudad de México
+// empresas: [{ id, nombre, tipo, productos, ciudad, estado, lat, lng }]
+export default function Mapa({ empresas = [], center, zoom = 5 }) {
+  const defaultCenter = [19.432608, -99.133209]; // Ciudad de México
+
+  const hasEmpresas = empresas && empresas.length > 0;
+  const initialCenter = center
+    ? center
+    : hasEmpresas
+    ? [empresas[0].lat, empresas[0].lng]
+    : defaultCenter;
 
   useEffect(() => {
     console.log("🌍 Mapa de OMEC cargado correctamente ✅");
@@ -26,12 +35,12 @@ export default function Mapa() {
 
   return (
     <div
-      className="w-full h-full rounded-xl shadow-lg border border-gray-200"
+      className="w-full h-full rounded-xl shadow-lg border border-gray-200 bg-white"
       style={{ height: "500px", width: "100%" }}
     >
       <MapContainer
-        center={position}
-        zoom={13}
+        center={initialCenter}
+        zoom={zoom}
         style={{ height: "100%", width: "100%", borderRadius: "12px" }}
       >
         {/* ============================
@@ -45,14 +54,30 @@ export default function Mapa() {
         />
 
         {/* ============================
-            📍 Marcador de ejemplo
+            📍 Marcadores
         ============================ */}
-        <Marker position={position} icon={customIcon}>
-          <Popup>
-            <b>OMEC - Ciudad de México</b> <br />
-            Aquí se encuentra una de nuestras sedes 🌎
-          </Popup>
-        </Marker>
+        {hasEmpresas ? (
+          empresas.map((e) => (
+            <Marker
+              key={e.id}
+              position={[e.lat, e.lng]}
+              icon={customIcon}
+            >
+              <Popup>
+                <b>{e.nombre}</b> <br />
+                {e.tipo} — {e.productos} <br />
+                {e.ciudad}, {e.estado}
+              </Popup>
+            </Marker>
+          ))
+        ) : (
+          <Marker position={defaultCenter} icon={customIcon}>
+            <Popup>
+              <b>OMEC - Ciudad de México</b> <br />
+              Aquí se encuentra una de nuestras sedes 🌎
+            </Popup>
+          </Marker>
+        )}
       </MapContainer>
     </div>
   );
