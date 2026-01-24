@@ -1,3 +1,4 @@
+// src/pages/Inicio.jsx
 import React, { useEffect, useState } from "react";
 import MainHeader from "../components/MainHeader";
 import SidebarMenu from "../components/SidebarMenu";
@@ -46,10 +47,13 @@ export default function Inicio() {
           <div className="mx-auto max-w-5xl space-y-5">
             {/* Header feed */}
             <div className="flex items-center justify-between gap-3">
-              <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-xl px-5 py-3">
+              <div className="rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-xl px-5 py-3">
                 <h1 className="text-white font-extrabold text-lg md:text-xl">
                   Inicio
-                  <span className="text-white/60 font-semibold"> • Feed de publicaciones</span>
+                  <span className="text-white/60 font-semibold">
+                    {" "}
+                    • Feed de publicaciones
+                  </span>
                 </h1>
                 <p className="text-white/60 text-sm mt-1">
                   Publicaciones tuyas y de otras empresas (ordenadas por fecha).
@@ -73,7 +77,7 @@ export default function Inicio() {
                 Cargando publicaciones...
               </div>
             ) : posts.length === 0 ? (
-              <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-xl p-12 text-center">
+              <div className="rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-xl p-12 text-center">
                 <div className="text-4xl mb-3">📰</div>
                 <p className="text-white font-semibold">Aún no hay publicaciones</p>
                 <p className="text-white/60 text-sm mt-1">
@@ -95,39 +99,68 @@ export default function Inicio() {
 }
 
 function PostCard({ post }) {
-  const userName = post?.user?.name || post?.user?.nombre || post?.user?.empresa || "Empresa";
+  const userName =
+    post?.user?.name ||
+    post?.user?.nombre ||
+    post?.user?.empresa ||
+    "Empresa";
+
   const createdAt = post?.createdAt ? new Date(post.createdAt) : null;
 
-  // si tu backend ya devuelve /uploads/posts/xxx está ok.
-  // si algún día llega sin slash, lo normalizamos:
-  const imgPath = post?.image
-    ? post.image.startsWith("/") ? post.image : `/${post.image}`
+  // ✅ Avatar (foto de perfil del autor del post)
+  const avatarPath = post?.user?.profile_image
+    ? post.user.profile_image.startsWith("/")
+      ? post.user.profile_image
+      : `/${post.user.profile_image}`
     : null;
 
+  // ✅ Imagen del post
+  const imgPath = post?.image
+    ? post.image.startsWith("/")
+      ? post.image
+      : `/${post.image}`
+    : null;
+
+  // ✅ Video del post
   const videoPath = post?.video
-    ? post.video.startsWith("/") ? post.video : `/${post.video}`
+    ? post.video.startsWith("/")
+      ? post.video
+      : `/${post.video}`
     : null;
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-xl p-5 md:p-6">
+    <article className="rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-xl p-5 md:p-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           {/* Avatar */}
-          <div className="h-11 w-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-white/80 font-extrabold">
-            {userName?.[0]?.toUpperCase() || "E"}
+          <div className="h-11 w-11 rounded-2xl overflow-hidden border border-white/10 bg-white/10 flex items-center justify-center">
+            {avatarPath ? (
+              <img
+                src={`${API_BASE}${avatarPath}`}
+                alt={`Avatar ${userName}`}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <span className="text-white/80 font-extrabold">
+                {userName?.[0]?.toUpperCase() || "E"}
+              </span>
+            )}
           </div>
 
           <div>
             <div className="font-semibold text-white">{userName}</div>
             <div className="text-xs text-white/55">
-              {createdAt ? createdAt.toLocaleString("es-ES", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              }) : ""}
+              {createdAt
+                ? createdAt.toLocaleString("es-ES", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : ""}
             </div>
           </div>
         </div>
@@ -140,7 +173,7 @@ function PostCard({ post }) {
         </p>
       )}
 
-      {/* Media (FIX desbordamiento + look premium) */}
+      {/* Media */}
       {(imgPath || videoPath) && (
         <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
           {imgPath && (

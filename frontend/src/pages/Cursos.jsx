@@ -3,12 +3,6 @@ import React, { useState } from "react";
 import SidebarMenu from "../components/SidebarMenu";
 import MainHeader from "../components/MainHeader";
 
-/**
- * Cursos.jsx
- * - Fondo hero con estética OMEC/ecosyval (hexágonos, dorados, azules, diagonales)
- * - Formulario de contacto para agendar/requerir capacitaciones y cursos
- */
-
 const API_URL = import.meta?.env?.VITE_API_URL || "http://localhost:3000";
 
 export default function Cursos() {
@@ -37,9 +31,8 @@ export default function Cursos() {
     setError("");
     setOk(false);
 
-    // Validación mínima
     if (!form.nombre || !form.apellido || !form.email || !form.estado || !form.telefono) {
-      setError("Por favor completa nombre, apellido, email, estado y teléfono.");
+      setError("Completa los campos obligatorios.");
       return;
     }
 
@@ -71,174 +64,106 @@ export default function Cursos() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* HEADER GLOBAL (mismo de Profile, Mapa, Recompensas, etc.) */}
-      <MainHeader
-        title="ECOSYSVAL"
-        showSearch={true}
-        showBack={false}
-      />
+    <div className="flex flex-col min-h-screen bg-fixed bg-cover bg-center" style={{ backgroundImage: "url('/fondo.png')" }}>
+      <MainHeader />
 
       <div className="flex flex-1">
-        {/* MENÚ LATERAL */}
-        <aside className="w-64 h-screen bg-blue-900 text-white shadow-lg overflow-y-auto">
+        <aside className="w-64 hidden md:block">
           <SidebarMenu />
         </aside>
 
-        {/* CONTENIDO PRINCIPAL */}
         <main className="flex-1 relative overflow-hidden">
-          {/* Fondo desde /public/fcursos.png, SOLO en el área de contenido */}
+          {/* Fondo específico */}
           <div
-            className="absolute inset-0 -z-30 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 -z-20 bg-cover bg-center opacity-90"
             style={{ backgroundImage: "url('/fcursos.png')" }}
           />
 
-          <section className="relative mx-auto flex max-w-7xl flex-col gap-10 px-6 pb-20 pt-12 md:flex-row md:gap-12 md:px-10 lg:pt-16">
-            {/* Columna izquierda: copy */}
-            <div className="w-full md:flex-1">
-              <h1 className="text-3xl font-extrabold leading-snug sm:text-4xl md:text-5xl text-white drop-shadow-md">
-                Lleva a tu organización hacia el{" "}
-                <span className="text-[#ffd166]">Alto Desempeño</span>
+          <section className="relative mx-auto max-w-7xl px-6 py-14 grid gap-12 md:grid-cols-2">
+            {/* COPY */}
+            <div className="text-white rounded-3xl bg-black/35 backdrop-blur-xl border border-white/10 shadow-2xl p-8">
+
+              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+                Capacitación que impulsa{" "}
+                <span className="text-yellow-400">decisiones estratégicas</span>
               </h1>
 
-              <p className="mt-4 max-w-xl text-white/90 drop-shadow">
-                Prepara a tus líderes y equipos para transformar y mejorar sus
-                resultados en escenarios complejos e inciertos.
+              <p className="mt-5 max-w-xl text-white/95 leading-relaxed">
+                Diseñamos programas de alto impacto para fortalecer liderazgo,
+                finanzas, innovación y competitividad empresarial.
               </p>
 
-              <div className="mt-6 h-1 w-40 rounded bg-[#ffd166]" />
-
-              <ul className="mt-6 space-y-3 text-white/90">
+              <ul className="mt-8 space-y-3 text-white/80">
                 {[
-                  "Herramientas de posicionamiento estratégico empresarial",
-                  "Análisis financiero para la toma de decisiones",
-                  "Diseño de Plan de Negocios",
+                  "Estrategia y planeación empresarial",
+                  "Análisis financiero y toma de decisiones",
+                  "Diseño de modelos de negocio",
                   "Nearshoring y comercio internacional",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="mt-1 inline-block h-2 w-2 rounded-full bg-[#ffd166]" />
+                    <span className="mt-2 h-2 w-2 rounded-full bg-yellow-400" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
 
-              <div className="mt-8 grid max-w-lg grid-cols-3 gap-6 text-white">
+              <div className="mt-10 grid grid-cols-3 gap-6 text-white">
                 <Stat value="30+" label="Años de experiencia" />
-                <Stat value="200+" label="Clientes en todo el mundo" />
-                <Stat value="150+" label="Consultores en 15 países" />
+                <Stat value="200+" label="Clientes" />
+                <Stat value="15" label="Países" />
               </div>
             </div>
 
-            {/* Columna derecha: formulario */}
-            <div className="w-full md:w-[480px]">
-              <div className="rounded-2xl border border-white/20 bg-white/90 p-6 shadow-2xl backdrop-blur-md">
-                <div className="mb-4">
-                  <LogoEcosyval />
-                  <h2 className="mt-2 text-center text-lg font-bold text-slate-800">
-                    AGENDA UNA REUNIÓN AHORA
-                  </h2>
-                  <p className="text-center text-xs text-slate-500">
-                    Déjanos tus datos y te contactaremos a la brevedad.
-                  </p>
+            {/* FORMULARIO */}
+            <div className="rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl p-6">
+              <LogoEcosyval />
+
+              <h2 className="mt-2 text-center text-lg font-bold text-white">
+                Agenda una reunión
+              </h2>
+              <p className="mb-4 text-center text-xs text-white/70">
+                Un consultor se comunicará contigo
+              </p>
+
+              <form onSubmit={handleSubmit} className="grid gap-3">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <Input name="nombre" label="Nombre *" value={form.nombre} onChange={handleChange} />
+                  <Input name="apellido" label="Apellido *" value={form.apellido} onChange={handleChange} />
                 </div>
 
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3">
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <Input
-                      name="nombre"
-                      label="Nombre *"
-                      value={form.nombre}
-                      onChange={handleChange}
-                      required
-                    />
-                    <Input
-                      name="apellido"
-                      label="Apellido *"
-                      value={form.apellido}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                <Input name="email" type="email" label="Email *" value={form.email} onChange={handleChange} />
 
-                  <Input
-                    name="email"
-                    type="email"
-                    label="E-mail *"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                  />
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <Select name="estado" label="Estado *" value={form.estado} onChange={handleChange} options={ESTADOS_MX} />
+                  <Input name="telefono" label="Teléfono *" value={form.telefono} onChange={handleChange} />
+                </div>
 
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <Select
-                      name="estado"
-                      label="Estado *"
-                      value={form.estado}
-                      onChange={handleChange}
-                      options={ESTADOS_MX}
-                      required
-                    />
-                    <Input
-                      name="telefono"
-                      label="Teléfono *"
-                      value={form.telefono}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <Input name="empresa" label="Empresa" value={form.empresa} onChange={handleChange} />
+                  <Input name="cargo" label="Cargo" value={form.cargo} onChange={handleChange} />
+                </div>
 
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <Input
-                      name="empresa"
-                      label="Empresa *"
-                      value={form.empresa}
-                      onChange={handleChange}
-                      required
-                    />
-                    <Input
-                      name="cargo"
-                      label="Cargo *"
-                      value={form.cargo}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                <Select
+                  name="interes"
+                  label="Interés"
+                  value={form.interes}
+                  onChange={handleChange}
+                  options={["Capacitación", "Curso", "Diplomado", "Asesoría"]}
+                />
 
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <Select
-                      name="interes"
-                      label="Interés"
-                      value={form.interes}
-                      onChange={handleChange}
-                      options={["Capacitación", "Curso", "Diplomado", "Asesoría"]}
-                    />
-                  </div>
+                <Textarea name="mensaje" label="Mensaje" value={form.mensaje} onChange={handleChange} />
 
-                  <Textarea
-                    name="mensaje"
-                    label="Mensaje (opcional)"
-                    value={form.mensaje}
-                    onChange={handleChange}
-                    rows={3}
-                  />
+                {error && <p className="text-sm text-red-400">{error}</p>}
+                {ok && <p className="text-sm text-green-400">Solicitud enviada correctamente ✔</p>}
 
-                  {error && <p className="text-sm text-red-600">{error}</p>}
-
-                  {ok && (
-                    <p className="rounded-md bg-green-50 p-2 text-center text-sm text-green-700">
-                      ¡Gracias! Hemos recibido tu solicitud. Nos pondremos en contacto pronto.
-                    </p>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={sending}
-                    className="mt-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#ffd166] px-5 py-3 font-semibold text-slate-900 shadow hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {sending ? "Enviando..." : "Agendar ahora"}
-                  </button>
-                </form>
-              </div>
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="mt-2 rounded-2xl bg-yellow-400 py-3 font-extrabold text-black hover:bg-yellow-500 transition disabled:opacity-60"
+                >
+                  {sending ? "Enviando..." : "Agendar ahora"}
+                </button>
+              </form>
             </div>
           </section>
         </main>
@@ -247,52 +172,51 @@ export default function Cursos() {
   );
 }
 
-/*** UI helpers ***/
-function Input({ label, name, value, onChange, type = "text", required }) {
+/* ===== Helpers ===== */
+
+function Input({ label, name, value, onChange, type = "text" }) {
   return (
-    <label className="text-sm">
-      <span className="mb-1 block text-xs font-semibold text-slate-600">{label}</span>
+    <label className="text-xs text-white/70">
+      {label}
       <input
         type={type}
         name={name}
         value={value}
         onChange={onChange}
-        required={required}
-        className="w-full rounded-lg border border-slate-300/70 bg-white px-3 py-2 text-slate-800 outline-none ring-[#ffd166]/30 focus:border-[#ffd166] focus:ring"
+        className="mt-1 w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-yellow-400"
       />
     </label>
   );
 }
 
-function Textarea({ label, name, value, onChange, rows = 3 }) {
+function Textarea({ label, name, value, onChange }) {
   return (
-    <label className="text-sm">
-      <span className="mb-1 block text-xs font-semibold text-slate-600">{label}</span>
+    <label className="text-xs text-white/70">
+      {label}
       <textarea
         name={name}
         value={value}
         onChange={onChange}
-        rows={rows}
-        className="w-full resize-y rounded-lg border border-slate-300/70 bg-white px-3 py-2 text-slate-800 outline-none ring-[#ffd166]/30 focus:border-[#ffd166] focus:ring"
+        rows={3}
+        className="mt-1 w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-yellow-400"
       />
     </label>
   );
 }
 
-function Select({ label, name, value, onChange, options, required }) {
+function Select({ label, name, value, onChange, options }) {
   return (
-    <label className="text-sm">
-      <span className="mb-1 block text-xs font-semibold text-slate-600">{label}</span>
+    <label className="text-xs text-white/70">
+      {label}
       <select
         name={name}
         value={value}
         onChange={onChange}
-        required={required}
-        className="w-full rounded-lg border border-slate-300/70 bg-white px-3 py-2 text-slate-800 outline-none ring-[#ffd166]/30 focus:border-[#ffd166] focus:ring"
+        className="mt-1 w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-yellow-400"
       >
         <option value="">Selecciona…</option>
         {options.map((opt) => (
-          <option key={opt} value={opt}>
+          <option key={opt} value={opt} className="text-black">
             {opt}
           </option>
         ))}
@@ -304,72 +228,18 @@ function Select({ label, name, value, onChange, options, required }) {
 function Stat({ value, label }) {
   return (
     <div>
-      <div className="text-2xl font-extrabold">{value}</div>
-      <div className="text-xs text-white/80">{label}</div>
+      <div className="text-2xl font-extrabold text-yellow-400">{value}</div>
+      <div className="text-xs text-white/70">{label}</div>
     </div>
   );
 }
 
 function LogoEcosyval() {
-  // Logo.png ubicado en /public/Logo.png
   return (
-    <div className="flex items-center justify-center mb-2">
-      <img
-        src="/Logo.png"
-        alt="Ecosistema de Cadenas de Valor"
-        className="h-28 mx-auto object-contain"
-      />
+    <div className="flex justify-center mb-3">
+      <img src="/Logo.png" alt="Ecosysval" className="h-20 object-contain" />
     </div>
   );
 }
 
-/** Hex grid background (SVG) */
-function HexGrid({ className = "", color = "#f2c94c" }) {
-  return (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <pattern
-          id="hex"
-          width="40"
-          height="35"
-          patternUnits="userSpaceOnUse"
-          patternTransform="scale(1)"
-        >
-          <path
-            d="M10 0 L30 0 L40 17.5 L30 35 L10 35 L0 17.5 Z"
-            fill="none"
-            stroke={color}
-            strokeWidth="0.6"
-            opacity="0.6"
-          />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#hex)" />
-    </svg>
-  );
-}
-
-/** Dots background (SVG) */
-function DotsPattern({ className = "" }) {
-  return (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="1" fill="white" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#dots)" />
-    </svg>
-  );
-}
-
-// Lista corta de estados para demo; rellena con los que necesites
-const ESTADOS_MX = [
-  "Aguascalientes",
-  "Baja California",
-  "CDMX",
-  "Jalisco",
-  "Nuevo León",
-  "Puebla",
-  "Yucatán",
-];
+const ESTADOS_MX = ["CDMX", "Jalisco", "Nuevo León", "Puebla", "Yucatán"];

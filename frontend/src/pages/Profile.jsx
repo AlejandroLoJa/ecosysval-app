@@ -286,7 +286,7 @@ export default function Profile() {
         {/* Main */}
         <main className="flex-1 px-4 md:px-8 py-6">
           {/* ===== Banner ===== */}
-          <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-2xl">
+          <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-2xl">
             <div className="relative h-56 md:h-64">
               {profileBanner ? (
                 <img src={profileBanner} alt="Banner" className="w-full h-full object-cover" />
@@ -347,7 +347,7 @@ export default function Profile() {
 
           {/* ===== Acciones flotantes ===== */}
           <div className="mt-6 flex justify-center">
-            <div className="rounded-3xl border border-white/10 bg-black/35 backdrop-blur-xl shadow-xl px-4 py-3 flex items-center gap-3">
+            <div className="rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-xl px-4 py-3 flex items-center gap-3">
               <label className="cursor-pointer" title="Publicar Imagen">
                 <input type="file" accept="image/*" onChange={handleImagenSeleccionada} className="hidden" />
                 <div className="h-11 w-11 rounded-2xl border border-white/10 bg-white/10 hover:bg-white/15 transition flex items-center justify-center">
@@ -389,7 +389,7 @@ export default function Profile() {
               <h2 className="text-xl md:text-2xl font-extrabold text-white mb-4">Mis Publicaciones</h2>
 
               {/* Crear post */}
-              <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-xl p-5 md:p-6">
+              <div className="rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-xl p-5 md:p-6">
                 <textarea
                   value={nuevoTexto}
                   onChange={(e) => setNuevoTexto(e.target.value)}
@@ -408,7 +408,7 @@ export default function Profile() {
                     />
                     <button
                       onClick={removerImagen}
-                      className="absolute top-3 right-3 h-10 w-10 rounded-2xl bg-black/50 hover:bg-black/70 transition flex items-center justify-center border border-white/10"
+                      className="absolute top-3 right-3 h-10 w-10 rounded-2xl bg-black/70 hover:bg-black/70 transition flex items-center justify-center border border-white/10"
                       title="Quitar imagen"
                     >
                       <X className="w-5 h-5 text-white" />
@@ -424,7 +424,7 @@ export default function Profile() {
                     </video>
                     <button
                       onClick={removerVideo}
-                      className="absolute top-3 right-3 h-10 w-10 rounded-2xl bg-black/50 hover:bg-black/70 transition flex items-center justify-center border border-white/10"
+                      className="absolute top-3 right-3 h-10 w-10 rounded-2xl bg-black/70 hover:bg-black/70 transition flex items-center justify-center border border-white/10"
                       title="Quitar video"
                     >
                       <X className="w-5 h-5 text-white" />
@@ -461,14 +461,14 @@ export default function Profile() {
               {/* Lista posts */}
               <div className="mt-6 space-y-5">
                 {publicaciones.length === 0 ? (
-                  <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-xl p-10 text-center text-white/70">
+                  <div className="rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-xl p-10 text-center text-white/70">
                     <div className="text-4xl mb-3">🚀</div>
                     <div className="text-lg font-semibold text-white">Aún no tienes publicaciones</div>
                     <div className="text-sm text-white/60 mt-1">Comparte tus ideas, imágenes o videos con la comunidad</div>
                   </div>
                 ) : (
                   publicaciones.map((pub) => (
-                    <article key={pub.id} className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-xl p-5 md:p-6">
+                    <article key={pub.id} className="rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-xl p-5 md:p-6">
                       <div className="flex items-start justify-between gap-3 mb-4">
                         <div className="flex items-center gap-3">
                           {profilePic ? (
@@ -572,7 +572,7 @@ export default function Profile() {
 
             {/* Columna derecha */}
             <aside className="space-y-6">
-              <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-xl p-5">
+              <div className="rounded-3xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-xl p-5">
                 <h3 className="font-extrabold text-white text-lg mb-3">Información</h3>
                 <ul className="text-white/75 space-y-2 text-sm">
                   <li>📩 <b className="text-white">Mensajes:</b> 2</li>
@@ -582,8 +582,8 @@ export default function Profile() {
                 </ul>
               </div>
 
-              <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-xl p-5">
-                <h3 className="font-extrabold text-white text-lg mb-4 text-center">Membresía</h3>
+              <div className="rounded-3xl border border-white/10 bg-yellow/40 backdrop-blur-xl shadow-xl p-5">
+                <h3 className="font-extrabold text-black text-lg mb-4 text-center">Membresía</h3>
                 <div className="flex justify-center">
                   <img src="/Platino.png" alt="Membresía" className="w-40 h-44 object-contain" />
                 </div>

@@ -1,8 +1,9 @@
 // src/pages/FormularioComercio.jsx
 import React, { useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-// Agregamos los iconos que faltaban: Bell y MessageSquare
-import { ChevronLeft, Bell, MessageSquare } from "lucide-react"; 
+import { Send } from "lucide-react";
+import MainHeader from "../components/MainHeader";
+import SidebarMenu from "../components/SidebarMenu";
 
 const unidadesMock = ["Ninguna", "Toneladas", "Kilogramos", "Piezas", "Litros"];
 const productosMock = ["Madera refinada", "Acero laminado", "Textil industrial"];
@@ -13,7 +14,14 @@ export default function FormularioComercio() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { empresaNombre, empresaTipo, ciudad, estado } = location.state || {};
+  // ✅ MapaPage manda: { nombre, tipo, productos, servicios, ciudad, estado }
+  const state = location.state || {};
+  const empresaNombre = state.nombre || state.empresaNombre || "Empresa";
+  const empresaTipo = state.tipo || state.empresaTipo || "—";
+  const ciudad = state.ciudad || "—";
+  const estado = state.estado || "—";
+  const productos = state.productos || "—";
+  const servicios = state.servicios || "—";
 
   const [tipoOperacion, setTipoOperacion] = useState("producto");
   const [tipoTransaccion, setTipoTransaccion] = useState("compra");
@@ -60,286 +68,282 @@ export default function FormularioComercio() {
 
   return (
     <div
-      className="min-h-screen flex flex-col relative"
-      style={{
-        backgroundImage: "url('/fondo.png')", 
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
+      className="min-h-screen bg-fixed bg-center bg-cover flex flex-col"
+      style={{ backgroundImage: "url('/fondo.png')" }}
     >
-      {/* Capa oscura (overlay) */}
-      <div className="absolute inset-0 bg-black/10 z-0"></div>
+      {/* ✅ MainHeader REAL (el mismo del resto del sistema) */}
+      <MainHeader showSearch={true} showBack={true} />
 
-      {/* 🔹 ENCABEZADO ACTUALIZADO */}
-      <header className="relative z-10 flex items-center justify-between bg-blue-900 px-6 py-3 shadow-lg text-white">
-        
-        {/* Izquierda: Volver (Solo ícono) + Título */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 text-white transition-all"
-            title="Volver"
-          >
-            <ChevronLeft className="w-7 h-7" />
-          </button>
-          
-          <div className="h-8 w-px bg-blue-700 mx-1 hidden sm:block"></div>
-          <span className="text-xl font-bold tracking-tight">ECOSYSVAL</span>
-        </div>
+      <div className="flex flex-1">
+        {/* ✅ Sidebar igual que las demás páginas */}
+        <aside className="w-64 bg-blue-900 text-white shadow-lg hidden md:block">
+          <SidebarMenu />
+        </aside>
 
-        {/* Derecha: Iconos y Perfil (Igual que en MapaPage) */}
-        <div className="flex items-center gap-6">
-          <MessageSquare className="w-6 h-6 cursor-pointer hover:text-blue-200 transition-colors" />
-          <Bell className="w-6 h-6 cursor-pointer hover:text-blue-200 transition-colors" />
-          
-          <div className="flex items-center gap-3 cursor-pointer pl-4 border-l border-blue-800">
-            {/* Nombre visible solo en pantallas medianas o más grandes */}
-            <div className="text-right hidden md:block leading-tight">
-              <div className="font-semibold text-sm">Alejandro Lopez</div>
-              <div className="text-xs text-blue-300">Usuario</div>
-            </div>
-            <img
-              src="/avatar.png"
-              alt="Usuario"
-              className="w-9 h-9 rounded-full border-2 border-blue-400 bg-gray-200"
-            />
-          </div>
-        </div>
+        {/* Contenido */}
+        <main className="flex-1 p-6 relative">
+          {/* Overlay para contraste */}
+          <div className="absolute inset-0 bg-black/25 -z-10" />
 
-      </header>
+          <div className="mx-auto w-full max-w-6xl grid gap-6 lg:grid-cols-[360px_1fr]">
+            {/* IZQUIERDA */}
+            <section className="rounded-3xl border border-white/10 bg-black/55 backdrop-blur-xl shadow-2xl p-6 text-white h-fit">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-lg font-extrabold">Formulario de comercio</h2>
+                  <p className="mt-2 text-sm text-white/70 leading-relaxed">
+                    Selecciona si vas a negociar un <strong>producto</strong> o un{" "}
+                    <strong>servicio</strong> y define si es <strong>compra</strong>{" "}
+                    o <strong>venta</strong>.
+                  </p>
+                </div>
 
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 lg:flex-row lg:items-start">
-        
-        {/* === COLUMNA IZQUIERDA: Contexto === */}
-        <section className="w-full rounded-2xl bg-white/95 backdrop-blur-sm p-6 shadow-xl lg:w-1/3 border border-white/20">
-          <h2 className="text-lg font-bold text-gray-800 border-b border-gray-100 pb-2">
-            Formulario de comercio
-          </h2>
-
-          <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-            Para realizar el proceso de comercio, selecciona el producto o
-            servicio que vas a solicitar u ofrecer a la empresa seleccionada.
-          </p>
-
-          <div className="mt-6 rounded-xl bg-blue-50/80 p-5 border border-blue-100">
-            <div className="flex flex-col gap-4">
-              <div>
-                <span className="text-xs font-bold text-blue-800 uppercase tracking-wider">
-                  Empresa Objetivo
+                <span className="hidden sm:inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-white/80">
+                  Negociación clara
                 </span>
-                <div className="text-lg font-bold text-gray-900 mt-1">
-                  {empresaNombre || "Empresa Desconocida"}
-                </div>
-                <div className="text-xs text-gray-500 font-mono mt-1">ID: {empresaId}</div>
               </div>
 
-              {(ciudad || estado) && (
+              <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="text-[11px] font-bold text-yellow-300/90 uppercase tracking-wider">
+                  Empresa objetivo
+                </div>
+
+                <div className="mt-2 text-lg font-extrabold">{empresaNombre}</div>
+
+                <div className="mt-1 text-xs text-white/60 font-mono">
+                  ID: {empresaId}
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <Info label="Tipo" value={empresaTipo} />
+                  <Info label="Ubicación" value={`${ciudad}, ${estado}`} />
+                  <Info label="Productos" value={productos} />
+                  <Info label="Servicios" value={servicios} />
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-4">
+                <p className="text-xs text-yellow-100/90 leading-relaxed">
+                  ⚠️ La solicitud está sujeta a aprobación. Entre más claro el alcance,
+                  más rápido se gestiona.
+                </p>
+              </div>
+            </section>
+
+            {/* DERECHA */}
+            <section className="rounded-3xl border border-white/10 bg-black/55 backdrop-blur-xl shadow-2xl p-6 md:p-8 text-white">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-white/10">
                 <div>
-                  <span className="text-xs font-bold text-blue-800 uppercase tracking-wider">
-                    Ubicación
+                  <h3 className="text-lg font-extrabold">Detalle de la operación</h3>
+                  <p className="text-sm text-white/70">
+                    Define los parámetros principales de la transacción.
+                  </p>
+                </div>
+
+                <div className="inline-flex items-center rounded-2xl border border-white/10 bg-white/5 p-1">
+                  <button
+                    type="button"
+                    onClick={() => setTipoOperacion("producto")}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
+                      tipoOperacion === "producto"
+                        ? "bg-white text-[#071a33]"
+                        : "text-white/80 hover:bg-white/10"
+                    }`}
+                  >
+                    Producto
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTipoOperacion("servicio")}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
+                      tipoOperacion === "servicio"
+                        ? "bg-white text-[#071a33]"
+                        : "text-white/80 hover:bg-white/10"
+                    }`}
+                  >
+                    Servicio
+                  </button>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+                <div>
+                  <span className="block text-sm font-semibold text-white/90 mb-3">
+                    Tipo de transacción
                   </span>
-                  <div className="text-sm text-gray-700 mt-1">
-                    {ciudad && `${ciudad}, `} {estado}
+
+                  <div className="flex gap-3">
+                    <ChipRadio
+                      label="Compra"
+                      active={tipoTransaccion === "compra"}
+                      onClick={() => setTipoTransaccion("compra")}
+                    />
+                    <ChipRadio
+                      label="Venta"
+                      active={tipoTransaccion === "venta"}
+                      onClick={() => setTipoTransaccion("venta")}
+                    />
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
 
-          <div className="mt-6 p-4 rounded-lg bg-yellow-50 border border-yellow-100">
-            <p className="text-xs text-yellow-800 font-medium leading-relaxed">
-              ⚠️ La oferta de comercio está sujeta a aprobación. Usa este espacio para iniciar una negociación clara.
-            </p>
-          </div>
-        </section>
+                {tipoOperacion === "producto" ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="md:col-span-2">
+                      <Label text="Producto *" />
+                      <select
+                        name="producto"
+                        value={formProducto.producto}
+                        onChange={handleProductoChange}
+                        className={fieldClass}
+                        required
+                      >
+                        <option value="">Selecciona un producto...</option>
+                        {productosMock.map((p) => (
+                          <option key={p} value={p}>
+                            {p}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-        {/* === COLUMNA DERECHA: Formulario === */}
-        <section className="w-full rounded-2xl bg-white/95 backdrop-blur-sm p-8 shadow-xl lg:w-2/3 border border-white/20">
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">
-                Detalle de la operación
-              </h3>
-              <p className="text-sm text-gray-500">
-                Define los parámetros de la transacción.
-              </p>
-            </div>
+                    <div>
+                      <Label text="Cantidad *" />
+                      <input
+                        type="number"
+                        name="cantidad"
+                        min="0"
+                        placeholder="0"
+                        value={formProducto.cantidad}
+                        onChange={handleProductoChange}
+                        className={fieldClass}
+                        required
+                      />
+                    </div>
 
-            <div className="flex bg-gray-100 p-1 rounded-full">
-              <button
-                type="button"
-                onClick={() => setTipoOperacion("producto")}
-                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-sm ${
-                  tipoOperacion === "producto"
-                    ? "bg-white text-blue-700 shadow"
-                    : "text-gray-500 hover:text-gray-700 bg-transparent shadow-none"
-                }`}
-              >
-                Producto
-              </button>
-              <button
-                type="button"
-                onClick={() => setTipoOperacion("servicio")}
-                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-sm ${
-                  tipoOperacion === "servicio"
-                    ? "bg-white text-blue-700 shadow"
-                    : "text-gray-500 hover:text-gray-700 bg-transparent shadow-none"
-                }`}
-              >
-                Servicio
-              </button>
-            </div>
-          </div>
+                    <div>
+                      <Label text="Unidad" />
+                      <select
+                        name="unidad"
+                        value={formProducto.unidad}
+                        onChange={handleProductoChange}
+                        className={fieldClass}
+                      >
+                        {unidadesMock.map((u) => (
+                          <option key={u} value={u}>
+                            {u}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <span className="block text-sm font-semibold text-gray-700 mb-3">
-                Tipo de Transacción
-              </span>
-              <div className="flex gap-6">
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${tipoTransaccion === 'compra' ? 'border-blue-600' : 'border-gray-300'}`}>
-                    {tipoTransaccion === 'compra' && <div className="w-2.5 h-2.5 bg-blue-600 rounded-full" />}
+                    <div className="md:col-span-2">
+                      <Label text="Descripción / Notas" />
+                      <textarea
+                        name="descripcion"
+                        rows={4}
+                        value={formProducto.descripcion}
+                        onChange={handleProductoChange}
+                        className={textareaClass}
+                        placeholder="Especificaciones técnicas, calidad, tiempos, condiciones..."
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="radio"
-                    className="hidden"
-                    name="tipoTransaccion"
-                    value="compra"
-                    checked={tipoTransaccion === "compra"}
-                    onChange={() => setTipoTransaccion("compra")}
-                  />
-                  <span className={`text-sm ${tipoTransaccion === 'compra' ? 'text-blue-700 font-medium' : 'text-gray-600 group-hover:text-gray-800'}`}>Compra</span>
-                </label>
+                ) : (
+                  <div className="grid grid-cols-1 gap-5">
+                    <div>
+                      <Label text="Servicio *" />
+                      <select
+                        name="servicio"
+                        value={formServicio.servicio}
+                        onChange={handleServicioChange}
+                        className={fieldClass}
+                        required
+                      >
+                        <option value="">Selecciona un servicio...</option>
+                        {serviciosMock.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${tipoTransaccion === 'venta' ? 'border-blue-600' : 'border-gray-300'}`}>
-                     {tipoTransaccion === 'venta' && <div className="w-2.5 h-2.5 bg-blue-600 rounded-full" />}
+                    <div>
+                      <Label text="Descripción del alcance" />
+                      <textarea
+                        name="descripcion"
+                        rows={6}
+                        value={formServicio.descripcion}
+                        onChange={handleServicioChange}
+                        className={textareaClass}
+                        placeholder="Detalles sobre tiempos, entregables y condiciones..."
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="radio"
-                    className="hidden"
-                    name="tipoTransaccion"
-                    value="venta"
-                    checked={tipoTransaccion === "venta"}
-                    onChange={() => setTipoTransaccion("venta")}
-                  />
-                  <span className={`text-sm ${tipoTransaccion === 'venta' ? 'text-blue-700 font-medium' : 'text-gray-600 group-hover:text-gray-800'}`}>Venta</span>
-                </label>
-              </div>
-            </div>
+                )}
 
-            {tipoOperacion === "producto" ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Producto</label>
-                  <select
-                    name="producto"
-                    value={formProducto.producto}
-                    onChange={handleProductoChange}
-                    className="w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-                    required
+                <div className="pt-6 mt-4 border-t border-white/10 flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigate(-1)}
+                    className="rounded-xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-semibold text-white/90 hover:bg-white/15 transition"
                   >
-                    <option value="">Seleccione un producto...</option>
-                    {productosMock.map((p) => (
-                      <option key={p} value={p}>{p}</option>
-                    ))}
-                  </select>
-                </div>
+                    Cancelar
+                  </button>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
-                  <input
-                    type="number"
-                    name="cantidad"
-                    min="0"
-                    placeholder="0.00"
-                    value={formProducto.cantidad}
-                    onChange={handleProductoChange}
-                    className="w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Unidad</label>
-                  <select
-                    name="unidad"
-                    value={formProducto.unidad}
-                    onChange={handleProductoChange}
-                    className="w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#ffcf43] px-6 py-3 text-sm font-extrabold text-[#071a33] shadow hover:brightness-105 transition"
                   >
-                    {unidadesMock.map((u) => (
-                      <option key={u} value={u}>{u}</option>
-                    ))}
-                  </select>
+                    <Send className="w-4 h-4" />
+                    Enviar solicitud
+                  </button>
                 </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Descripción / Notas</label>
-                  <textarea
-                    name="descripcion"
-                    rows={3}
-                    value={formProducto.descripcion}
-                    onChange={handleProductoChange}
-                    className="w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all outline-none resize-none"
-                    placeholder="Especificaciones técnicas..."
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-6 animate-fadeIn">
-                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Servicio</label>
-                  <select
-                    name="servicio"
-                    value={formServicio.servicio}
-                    onChange={handleServicioChange}
-                    className="w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-                    required
-                  >
-                    <option value="">Seleccione un servicio...</option>
-                    {serviciosMock.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Descripción del alcance</label>
-                  <textarea
-                    name="descripcion"
-                    rows={5}
-                    value={formServicio.descripcion}
-                    onChange={handleServicioChange}
-                    className="w-full rounded-lg border-gray-300 bg-gray-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-                    placeholder="Detalles sobre tiempos, entregables y condiciones..."
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md shadow-blue-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
-              >
-                <span>Enviar Solicitud</span>
-            
-              </button>
-            </div>
-          </form>
-        </section>
-      </main>
+              </form>
+            </section>
+          </div>
+        </main>
+      </div>
     </div>
+  );
+}
+
+/* Helpers */
+const fieldClass =
+  "w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300/40";
+
+const textareaClass =
+  "w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300/40 resize-y";
+
+function Label({ text }) {
+  return (
+    <span className="mb-1.5 block text-xs font-bold text-white/80 uppercase tracking-wider">
+      {text}
+    </span>
+  );
+}
+
+function Info({ label, value }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+      <div className="text-[11px] text-white/55">{label}</div>
+      <div className="text-sm font-semibold text-white truncate">{value}</div>
+    </div>
+  );
+}
+
+function ChipRadio({ label, active, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full px-4 py-2 text-sm font-semibold border transition ${
+        active
+          ? "bg-blue-600/90 border-blue-400/40 text-white shadow"
+          : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
+      }`}
+    >
+      {label}
+    </button>
   );
 }

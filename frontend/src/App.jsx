@@ -47,7 +47,7 @@ function AppContent() {
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/mapa" element={<MapaPage />} />
           <Route path="/cursos" element={<Cursos />} />
-          <Route path="/formulario-comercio/:empresaId" element={<FormularioComercio />}/>
+          <Route path="/formulario-comercio/"element={<FormularioComercio />}/>
           <Route path="/recompensas" element={<Recompensas />} />
           <Route path="/top-mundial" element={<TopMundial />} />
           <Route path="/notificaciones" element={<Notificaciones />} />

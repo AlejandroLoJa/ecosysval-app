@@ -77,6 +77,12 @@ export default function MainHeader({ showSearch = true, showBack = false }) {
   const mensajes = mensajesMock;
   const unreadMessages = mensajes.filter((m) => !m.leido).length;
 
+  const closeAllMenus = () => {
+    setMenuOpen(false);
+    setShowMessages(false);
+    setShowNotifications(false);
+  };
+
   return (
     <header className="relative z-[2500]">
       {/* Fondo premium */}
@@ -103,7 +109,10 @@ export default function MainHeader({ showSearch = true, showBack = false }) {
 
           <button
             type="button"
-            onClick={() => navigate("/inicio")}
+            onClick={() => {
+              closeAllMenus();
+              navigate("/inicio");
+            }}
             className="group flex items-center gap-2"
             title="Ir a Inicio"
           >
@@ -132,13 +141,12 @@ export default function MainHeader({ showSearch = true, showBack = false }) {
 
         {/* DERECHA */}
         <div className="flex items-center gap-2 md:gap-3 relative" ref={menuRef}>
-          {/* 💬 Mensajes */}
+          {/* 💬 Mensajes -> NAVEGA a /mensajes */}
           <button
             type="button"
             onClick={() => {
-              setShowMessages((s) => !s);
-              setShowNotifications(false);
-              setMenuOpen(false);
+              closeAllMenus();
+              navigate("/mensajes");
             }}
             className="relative h-10 w-10 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition flex items-center justify-center"
             title="Mensajes"
@@ -149,13 +157,12 @@ export default function MainHeader({ showSearch = true, showBack = false }) {
             )}
           </button>
 
-          {/* 🔔 Notificaciones */}
+          {/* 🔔 Notificaciones -> NAVEGA a /notificaciones */}
           <button
             type="button"
             onClick={() => {
-              setShowNotifications((s) => !s);
-              setShowMessages(false);
-              setMenuOpen(false);
+              closeAllMenus();
+              navigate("/notificaciones");
             }}
             className="relative h-10 w-10 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition flex items-center justify-center"
             title="Notificaciones"
@@ -178,7 +185,11 @@ export default function MainHeader({ showSearch = true, showBack = false }) {
             title="Menú de usuario"
           >
             {profilePic ? (
-              <img src={profilePic} alt="avatar" className="w-8 h-8 rounded-xl border border-white/15 object-cover" />
+              <img
+                src={profilePic}
+                alt="avatar"
+                className="w-8 h-8 rounded-xl border border-white/15 object-cover"
+              />
             ) : (
               <UserCircle className="w-8 h-8 text-white/70" />
             )}
@@ -187,15 +198,23 @@ export default function MainHeader({ showSearch = true, showBack = false }) {
               {displayName}
             </span>
 
-            <ChevronDown className={`w-4 h-4 text-white/70 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`w-4 h-4 text-white/70 transition-transform ${
+                menuOpen ? "rotate-180" : ""
+              }`}
+            />
           </button>
 
           {/* Dropdown usuario */}
           {menuOpen && (
             <div className="absolute right-0 top-12 w-56 overflow-hidden rounded-2xl border border-white/10 bg-[#0b1630]/95 backdrop-blur-xl shadow-2xl z-[2600]">
               <div className="px-4 py-3 border-b border-white/10">
-                <div className="text-sm font-semibold text-white/95 truncate">{displayName}</div>
-                <div className="text-xs text-white/60 truncate">{user?.email || ""}</div>
+                <div className="text-sm font-semibold text-white/95 truncate">
+                  {displayName}
+                </div>
+                <div className="text-xs text-white/60 truncate">
+                  {user?.email || ""}
+                </div>
               </div>
 
               <button
@@ -208,9 +227,6 @@ export default function MainHeader({ showSearch = true, showBack = false }) {
               </button>
             </div>
           )}
-
-          {/* (Opcional) Aquí luego ponemos dropdowns de mensajes/notificaciones con el mismo estilo */}
-          {/* showMessages / showNotifications */}
         </div>
       </div>
     </header>
