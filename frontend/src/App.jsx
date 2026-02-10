@@ -19,7 +19,21 @@ import TopMundial from "./pages/TopMundial";
 import Notificaciones from "./pages/Notificaciones";
 import Mensajes from "./pages/Mensajes";
 import Empleos from "./pages/Empleos";
-
+import HerramientasFinancieras from "./pages/HerramientasFinancieras";
+import EcommerceHome from "./pages/ecommerce/EcommerceHome";
+import Marketplace from "./pages/ecommerce/Marketplace";
+import ProductoDetalle from "./pages/ecommerce/ProductoDetalle";
+import Comparador from "./pages/ecommerce/Comparador";
+import Cotizaciones from "./pages/ecommerce/Cotizaciones";
+import MisCompras from "./pages/ecommerce/MisCompras";
+import MisVentas from "./pages/ecommerce/MisVentas";
+import Checkout from "./pages/ecommerce/Checkout";
+import EcommerceAnalytics from "./pages/ecommerce/EcommerceAnalytics";
+import Ajustes from "./pages/Ajustes";
+import Grupos from "./pages/Grupos";
+import Alianzas from "./pages/Alianzas";
+import Oportunidades from "./pages/Oportunidades";
+import Tendencias from "./pages/Tendencias";
 function AppContent() {
   const location = useLocation();
 
@@ -47,12 +61,27 @@ function AppContent() {
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/mapa" element={<MapaPage />} />
           <Route path="/cursos" element={<Cursos />} />
-          <Route path="/formulario-comercio/"element={<FormularioComercio />}/>
+          <Route path="/formulario-comercio/" element={<FormularioComercio />} />
           <Route path="/recompensas" element={<Recompensas />} />
           <Route path="/top-mundial" element={<TopMundial />} />
           <Route path="/notificaciones" element={<Notificaciones />} />
           <Route path="/mensajes" element={<Mensajes />} />
           <Route path="/empleos" element={<Empleos />} />
+          <Route path="/herramientas-financieras" element={<HerramientasFinancieras />} />
+          <Route path="/ecommerce" element={<EcommerceHome />} />
+          <Route path="/ecommerce/marketplace" element={<Marketplace />} />
+          <Route path="/ecommerce/producto/:id" element={<ProductoDetalle />} />
+          <Route path="/ecommerce/comparador" element={<Comparador />} />
+          <Route path="/ecommerce/cotizaciones" element={<Cotizaciones />} />
+          <Route path="/ecommerce/compras" element={<MisCompras />} />
+          <Route path="/ecommerce/ventas" element={<MisVentas />} />
+          <Route path="/ecommerce/checkout" element={<Checkout />} />
+          <Route path="/ecommerce/analytics" element={<EcommerceAnalytics />} />
+          <Route path="/ajustes" element={<Ajustes />} />
+          <Route path="/grupos" element={<Grupos />} />
+          <Route path="/alianzas" element={<Alianzas />} />
+          <Route path="/oportunidades" element={<Oportunidades />} />
+          <Route path="/tendencias" element={<Tendencias />} />
         </Routes>
       </div>
     </>

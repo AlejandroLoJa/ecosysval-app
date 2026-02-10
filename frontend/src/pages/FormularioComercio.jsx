@@ -144,22 +144,20 @@ export default function FormularioComercio() {
                   <button
                     type="button"
                     onClick={() => setTipoOperacion("producto")}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
-                      tipoOperacion === "producto"
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${tipoOperacion === "producto"
                         ? "bg-white text-[#071a33]"
                         : "text-white/80 hover:bg-white/10"
-                    }`}
+                      }`}
                   >
                     Producto
                   </button>
                   <button
                     type="button"
                     onClick={() => setTipoOperacion("servicio")}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
-                      tipoOperacion === "servicio"
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${tipoOperacion === "servicio"
                         ? "bg-white text-[#071a33]"
                         : "text-white/80 hover:bg-white/10"
-                    }`}
+                      }`}
                   >
                     Servicio
                   </button>
@@ -194,16 +192,20 @@ export default function FormularioComercio() {
                         name="producto"
                         value={formProducto.producto}
                         onChange={handleProductoChange}
-                        className={fieldClass}
+                        className={`${fieldClass} text-gray-900`}
                         required
                       >
-                        <option value="">Selecciona un producto...</option>
+                        <option value="" className="text-gray-400">
+                          Selecciona un producto...
+                        </option>
+
                         {productosMock.map((p) => (
-                          <option key={p} value={p}>
+                          <option key={p} value={p} className="text-gray-900">
                             {p}
                           </option>
                         ))}
                       </select>
+
                     </div>
 
                     <div>
@@ -226,10 +228,10 @@ export default function FormularioComercio() {
                         name="unidad"
                         value={formProducto.unidad}
                         onChange={handleProductoChange}
-                        className={fieldClass}
+                        className={`${fieldClass} text-gray-900`}
                       >
                         {unidadesMock.map((u) => (
-                          <option key={u} value={u}>
+                          <option key={u} value={u} className="text-gray-900">
                             {u}
                           </option>
                         ))}
@@ -337,11 +339,10 @@ function ChipRadio({ label, active, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full px-4 py-2 text-sm font-semibold border transition ${
-        active
+      className={`rounded-full px-4 py-2 text-sm font-semibold border transition ${active
           ? "bg-blue-600/90 border-blue-400/40 text-white shadow"
           : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
-      }`}
+        }`}
     >
       {label}
     </button>

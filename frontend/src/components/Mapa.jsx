@@ -1,84 +1,113 @@
 // src/components/Mapa.jsx
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import React, { useEffect, useMemo } from "react";
+import Map, { Marker, Popup } from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 // =============================
-// 🧭 Ícono personalizado para el marcador
+// 🔐 Configuración Mapbox
 // =============================
-const customIcon = L.icon({
-  iconUrl: "/custom-marker.png", // Ruta desde public/
-  iconSize: [40, 40], // Tamaño del ícono
-  iconAnchor: [20, 40], // Punto que “toca” el mapa
-  popupAnchor: [0, -35], // Ajuste del popup
-  className: "shadow-md", // Opcional para añadir sombra CSS
-});
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoiYWxlOTUxMDE5IiwiYSI6ImNtbDFhOXFkeTA2M2kzZXB0ZXRvanRzaGYifQ.u732kFuNU02xTJs9d43Jbg";
+
+const MAP_STYLE =
+  "mapbox://styles/ale951019/cml19r38j00c401s3fqd4hft0";
 
 // =============================
 // 🗺️ Componente principal
-// =============================
 // empresas: [{ id, nombre, tipo, productos, ciudad, estado, lat, lng }]
+// =============================
 export default function Mapa({ empresas = [], center, zoom = 5 }) {
-  const defaultCenter = [19.432608, -99.133209]; // Ciudad de México
+  const defaultCenter = {
+    latitude: 19.432608,
+    longitude: -99.133209,
+  };
 
-  const hasEmpresas = empresas && empresas.length > 0;
-  const initialCenter = center
-    ? center
-    : hasEmpresas
-    ? [empresas[0].lat, empresas[0].lng]
-    : defaultCenter;
+  const initialViewState = useMemo(() => {
+    if (center) {
+      return {
+        latitude: center[0],
+        longitude: center[1],
+        zoom,
+      };
+    }
+
+    if (empresas.length > 0) {
+      return {
+        latitude: Number(empresas[0].lat),
+        longitude: Number(empresas[0].lng),
+        zoom,
+      };
+    }
+
+    return {
+      ...defaultCenter,
+      zoom,
+    };
+  }, [center, empresas, zoom]);
 
   useEffect(() => {
-    console.log("🌍 Mapa de OMEC cargado correctamente ✅");
+    console.log("🌍 Mapbox GL cargado correctamente ✅");
   }, []);
 
   return (
     <div
-      className="w-full h-full rounded-xl shadow-lg border border-gray-200 bg-white"
-      style={{ height: "500px", width: "100%" }}
+      className="w-full rounded-xl shadow-lg border border-gray-200 overflow-hidden"
+      style={{ height: "500px" }}
     >
-      <MapContainer
-        center={initialCenter}
-        zoom={zoom}
-        style={{ height: "100%", width: "100%", borderRadius: "12px" }}
+      <Map
+        mapboxAccessToken={MAPBOX_TOKEN}
+        initialViewState={initialViewState}
+        mapStyle={MAP_STYLE}
+        style={{ width: "100%", height: "100%" }}
       >
-        {/* ============================
-            🎨 Fondo del mapa (Mapbox estilo tipo Google Maps)
-        ============================ */}
-        <TileLayer
-          url="https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWxlOTUxMDE5IiwiYSI6ImNtaGo4dGc4NjE4anQybG9nbXU2cXlndnUifQ.gUgMSw6o2RVGjq8eBhgTpA"
-          attribution='&copy; <a href="https://www.mapbox.com/">Mapbox</a> | Datos © <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
-          tileSize={512}
-          zoomOffset={-1}
-        />
-
         {/* ============================
             📍 Marcadores
         ============================ */}
-        {hasEmpresas ? (
+        {empresas.length > 0 ? (
           empresas.map((e) => (
             <Marker
               key={e.id}
-              position={[e.lat, e.lng]}
-              icon={customIcon}
+              latitude={Number(e.lat)}
+              longitude={Number(e.lng)}
+              anchor="bottom"
             >
-              <Popup>
-                <b>{e.nombre}</b> <br />
-                {e.tipo} — {e.productos} <br />
-                {e.ciudad}, {e.estado}
+              <img
+                src="/custom-marker.png"
+                alt="marker"
+                style={{ width: 40, height: 40 }}
+              />
+
+              <Popup
+                latitude={Number(e.lat)}
+                longitude={Number(e.lng)}
+                closeButton={false}
+                closeOnClick={false}
+                offset={25}
+              >
+                <div className="text-sm">
+                  <b>{e.nombre}</b>
+                  <br />
+                  {e.tipo} — {e.productos}
+                  <br />
+                  {e.ciudad}, {e.estado}
+                </div>
               </Popup>
             </Marker>
           ))
         ) : (
-          <Marker position={defaultCenter} icon={customIcon}>
-            <Popup>
-              <b>OMEC - Ciudad de México</b> <br />
-              Aquí se encuentra una de nuestras sedes 🌎
-            </Popup>
+          <Marker
+            latitude={defaultCenter.latitude}
+            longitude={defaultCenter.longitude}
+            anchor="bottom"
+          >
+            <img
+              src="/custom-marker.png"
+              alt="marker"
+              style={{ width: 40, height: 40 }}
+            />
           </Marker>
         )}
-      </MapContainer>
+      </Map>
     </div>
   );
 }

@@ -10,14 +10,14 @@ const menuItems = [
 
   { type: "divider", label: "Crecimiento" },
 
-  { label: "Blogs y Artículos", route: "/blogs", icon: "/icons/Blogs y artículos.png" },
   { label: "Capacitación-Cursos", route: "/cursos", icon: "/icons/Cursos y certificaciones.png" },
   { label: "Recompensas", route: "/recompensas", icon: "/icons/recompensas.png" },
   { label: "Top Mundial", route: "/top-mundial", icon: "/icons/Top mundial.png" },
+  { label: "Posición en el sistema", route: "/mapa", icon: "/icons/mapa.png" },
 
   { type: "divider", label: "Negocio" },
 
-  { label: "Herramientas Financieras", route: "/finanzas", icon: "/icons/Herramientas financieras.png" },
+  { label: "Herramientas Financieras", route: "/herramientas-financieras", icon: "/icons/Herramientas financieras.png" },
   { label: "E-commerce", route: "/ecommerce", icon: "/icons/E-comerce.png" },
   { label: "Buzón Oportunidades", route: "/oportunidades", icon: "/icons/Buzón de oportunidades.png" },
   { label: "Alianzas y Colaboraciones", route: "/alianzas", icon: "/icons/Alianzas y colaboraciones.png" },
@@ -33,7 +33,6 @@ const menuItems = [
 
   { type: "divider", label: "Sistema" },
 
-  { label: "Posición en el sistema", route: "/mapa", icon: "/icons/mapa.png" },
   { label: "Ajustes", route: "/ajustes", icon: "/icons/ajustes.png" },
 ];
 
